@@ -2,8 +2,8 @@
 Establishment model for individual business locations.
 """
 
-from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, Text
-from sqlalchemy.dialects.postgresql import JSONB, POINT
+from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, Text, Float
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 
@@ -41,7 +41,8 @@ class Establishment(BaseModel):
     
     # Location and status
     is_active = Column(Boolean, nullable=False, default=True)
-    location_coords = Column(POINT, nullable=True)  # for map discovery
+    latitude = Column(Float, nullable=True)  # for map discovery
+    longitude = Column(Float, nullable=True)  # for map discovery
 
     # Relationships
     business_owner = relationship("BusinessOwner", back_populates="establishments")

@@ -2,8 +2,8 @@
 Point Activity model for tracking all loyalty point transactions.
 """
 
-from sqlalchemy import Column, String, Integer, ForeignKey, Text, TIMESTAMP
-from sqlalchemy.dialects.postgresql import DECIMAL, JSONB
+from sqlalchemy import Column, String, Integer, ForeignKey, TIMESTAMP, Numeric, Text
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 
@@ -35,8 +35,8 @@ class PointActivity(BaseModel):
     processed_by_user_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)  # which worker/admin processed
     
     # Additional data
-    amount_spent = Column(DECIMAL(10,2), nullable=True)  # original purchase amount
-    metadata = Column(JSONB, nullable=True)  # any additional context
+    amount_spent = Column(Numeric(10,2), nullable=True)  # original purchase amount
+    extra_data = Column(JSONB, nullable=True)  # any additional context
 
     # Relationships
     user = relationship("User", back_populates="point_activities", foreign_keys=[user_id])

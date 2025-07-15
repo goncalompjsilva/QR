@@ -2,8 +2,8 @@
 QR Code model for one-time use loyalty codes.
 """
 
-from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, TIMESTAMP, Text
-from sqlalchemy.dialects.postgresql import DECIMAL, JSONB
+from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, TIMESTAMP, Text, Numeric
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 
@@ -26,7 +26,7 @@ class QRCode(BaseModel):
     # Code purpose
     code_type = Column(String(20), nullable=False)  # 'earn_points' or 'redeem_reward'
     points_value = Column(Integer, nullable=False)  # points to award or redeem
-    amount_spent = Column(DECIMAL(10,2), nullable=True)  # original purchase amount (for earn_points)
+    amount_spent = Column(Numeric(10,2), nullable=True)  # original purchase amount (for earn_points)
     
     # Usage tracking
     is_used = Column(Boolean, nullable=False, default=False, index=True)
@@ -41,7 +41,7 @@ class QRCode(BaseModel):
     
     # Additional data
     description = Column(Text, nullable=True)  # "Purchase of 40€", "Free Pizza Redemption"
-    metadata = Column(JSONB, nullable=True)  # any additional data needed
+    extra_data = Column(JSONB, nullable=True)  # any additional data needed
 
     # Relationships
     establishment = relationship("Establishment", back_populates="qr_codes")

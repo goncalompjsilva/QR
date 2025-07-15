@@ -4,32 +4,36 @@ Configuration settings for the FastAPI application.
 
 import os
 from typing import List
-from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv(override=True)
 
 
-class Settings(BaseSettings):
+class Settings:
     """Application settings."""
     
     # Basic app info
-    app_name: str = "QR Backend API"
-    debug: bool = False
-    environment: str = "production"
+    app_name: str = os.getenv("APP_NAME")
+    debug: bool = os.getenv("DEBUG", "false").lower() == "true"
+    environment: str = os.getenv("ENVIRONMENT")
     
     # Security
-    secret_key: str = "your-secret-key-here"
-    algorithm: str = "HS256"
-    access_token_expire_minutes: int = 30
+    secret_key: str = os.getenv("SECRET_KEY")
+    algorithm: str = os.getenv("ALGORITHM")
+    access_token_expire_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+    
+    # Google OAuth
+    google_client_id: str = os.getenv("GOOGLE_CLIENT_ID")
+    google_client_secret: str = os.getenv("GOOGLE_CLIENT_SECRET")
+    google_redirect_uri: str = os.getenv("GOOGLE_REDIRECT_URI")
     
     # Database
-    database_url: str = "postgresql://postgres:password@127.0.0.1:5432/qr_database"
+    database_url: str = os.getenv("DATABASE_URL")
     
     # CORS
-    allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    allowed_origins: str = os.getenv("ALLOWED_ORIGINS")
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
-
     @property
     def allowed_origins_list(self) -> List[str]:
         """Convert comma-separated string to list."""

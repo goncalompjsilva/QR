@@ -2,8 +2,8 @@
 User Loyalty Points model for tracking customer points per establishment.
 """
 
-from sqlalchemy import Column, Integer, ForeignKey, TIMESTAMP, UniqueConstraint
-from sqlalchemy.dialects.postgresql import DECIMAL, JSONB
+from sqlalchemy import Column, Integer, ForeignKey, TIMESTAMP, UniqueConstraint, Numeric
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 
@@ -31,7 +31,7 @@ class UserLoyaltyPoints(BaseModel):
     
     # Customer insights
     favorite_programs = Column(JSONB, nullable=True)  # track which programs user uses most
-    lifetime_value = Column(DECIMAL(10,2), default=0)  # estimated customer value
+    lifetime_value = Column(Numeric(10,2), default=0)  # estimated customer value
 
     # Relationships
     user = relationship("User", back_populates="loyalty_points")

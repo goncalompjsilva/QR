@@ -2,8 +2,7 @@
 Loyalty Program model for flexible reward programs.
 """
 
-from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, Text, TIMESTAMP
-from sqlalchemy.dialects.postgresql import DECIMAL
+from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, Text, TIMESTAMP, Numeric
 from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 
@@ -25,7 +24,7 @@ class LoyaltyProgram(BaseModel):
     
     # Point rules
     points_required = Column(Integer, nullable=False)  # points needed for reward
-    points_per_euro = Column(DECIMAL(5,2), default=1.0)  # how many points per euro spent
+    points_per_euro = Column(Numeric(5,2), default=1.0)  # how many points per euro spent
     max_redemptions_per_user = Column(Integer, nullable=True)  # limit per customer (NULL = unlimited)
     
     # Program settings
