@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import { Box } from '../components/box';
-import { Text } from '../components/text';
+import { Box } from '../ui/box';
+import { Text } from '../ui/text';
 
 const Home: React.FC = () => {
   return (
