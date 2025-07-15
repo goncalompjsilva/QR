@@ -179,6 +179,13 @@ module.exports = {
         body: undefined,
         mono: undefined,
         roboto: ['Roboto', 'sans-serif'],
+        montserrat: ['Montserrat_400Regular'],
+        'montserrat-light': ['Montserrat_400Regular'],
+        'montserrat-medium': ['Montserrat_500Medium'],
+        'montserrat-semibold': ['Montserrat_600SemiBold'],
+        'montserrat-bold': ['Montserrat_700Bold'],
+        'montserrat-extrabold': ['Montserrat_800ExtraBold'],
+        'montserrat-black': ['Montserrat_900Black'],
       },
       fontWeight: {
         extrablack: '950',

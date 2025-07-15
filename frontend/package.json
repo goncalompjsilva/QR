@@ -9,6 +9,7 @@
     "web": "DARK_MODE=media expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/montserrat": "^0.4.1",
     "@expo/html-elements": "^0.4.2",
     "@gluestack-ui/accordion": "^1.0.14",
     "@gluestack-ui/actionsheet": "^0.2.53",
@@ -42,7 +43,11 @@
     "babel-plugin-module-resolver": "^5.0.2",
     "dotenv": "^17.2.0",
     "expo": "~53.0.17",
+    "expo-font": "^13.3.2",
+    "expo-linear-gradient": "^14.1.5",
     "expo-status-bar": "~2.2.3",
+    "lucide-react": "^0.525.0",
+    "lucide-react-native": "^0.525.0",
     "nativewind": "^4.1.23",
     "react": "19.0.0",
     "react-dom": "^19.0.0",

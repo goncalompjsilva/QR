@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
-import Home from '../screens/Home';
+import { Text } from '../ui/text';
 
 type NavigationState = 'login' | 'register';
 
@@ -36,31 +35,22 @@ export default function AppNavigator() {
   }
 
   if (isAuthenticated) {
-    return <Home />;
+    return <Text>Authenticated User Screen</Text>; // Replace with your authenticated user screen component
   }
 
   // User is not authenticated, show login/register flow
   switch (navigationState) {
     case 'login':
       return (
-        <LoginScreen
-          onLoginSuccess={handleLoginSuccess}
-          onNavigateToRegister={handleNavigateToRegister}
-        />
+        <LoginScreen onLoginSuccess={handleLoginSuccess} />
       );
     case 'register':
       return (
-        <RegisterScreen
-          onRegisterSuccess={handleRegisterSuccess}
-          onNavigateToLogin={handleNavigateToLogin}
-        />
+        <Text>Register Screen</Text>
       );
     default:
       return (
-        <LoginScreen
-          onLoginSuccess={handleLoginSuccess}
-          onNavigateToRegister={handleNavigateToRegister}
-        />
+        <Text>Unknown State</Text>
       );
   }
 }
