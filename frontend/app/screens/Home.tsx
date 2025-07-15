@@ -1,11 +1,13 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet} from 'react-native';
+import { Box } from '../components/box';
+import { Text } from '../components/text';
 
 const Home: React.FC = () => {
   return (
-    <View>
+    <Box className="flex-1 justify-center items-center">
       <Text>Welcome to the Home Screen!</Text>
-    </View>
+    </Box>
   );
 };
 

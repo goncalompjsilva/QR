@@ -2,13 +2,17 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Home from './app/screens/Home';
+import { GluestackUIProvider } from './app/components/gluestack-ui-provider';
+import './global.css';
 
 export default function App(): React.JSX.Element {
   return (
-    <View style={styles.container}>
-      <Home />
-      <StatusBar style="auto" />
-    </View>
+    <GluestackUIProvider mode="light">
+      <View style={styles.container}>
+        <Home />
+        <StatusBar style="auto" />
+      </View>
+    </GluestackUIProvider>
   );
 }
 
