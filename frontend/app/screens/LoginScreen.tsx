@@ -1,27 +1,14 @@
 import React, { useState } from 'react';
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, View, Pressable } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useColorScheme } from 'nativewind';
+import { GradientBackground } from '../components';
 import { QrCode, Phone, Lock, Eye, EyeOff } from 'lucide-react-native';
-import { Box } from '../ui/box';
-import { VStack } from '../ui/vstack';
-import { HStack } from '../ui/hstack';
+import { Box, VStack, HStack } from '../ui/layout';
 import { Text } from '../ui/text';
-import { Button, ButtonText, ButtonIcon } from '../ui/button';
-import { Input, InputField } from '../ui/input';
-import { 
-  FormControl, 
-  FormControlLabel, 
-  FormControlLabelText,
-  FormControlHelper,
-  FormControlHelperText,
-  FormControlError,
-  FormControlErrorText,
-  FormControlErrorIcon
-} from '../ui/form-control';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { FormControl, Label, FormHelperText, FormErrorText } from '../ui/form';
 import { Spinner } from '../ui/spinner';
-import { Pressable } from '../ui/pressable';
 import { useAuth } from '../context/AuthContext';
 import { AuthService } from '../api/auth';
 import { getErrorMessage } from '../api';
@@ -31,7 +18,6 @@ interface LoginScreenProps {
 }
 
 export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
-  const { colorScheme } = useColorScheme();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -102,22 +88,12 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     }
   };
 
-  // Define gradient colors based on theme (similar to SplashScreen)
-  const gradientColors: [string, string, string] = colorScheme === 'dark' 
-    ? ['#ff6b35','#ffa726', '#ffa726'] // primary-900 to primary-800
-    : ['#ff6b35', '#ffa726', '#ffa726']; // primary-50 to primary-100
-
   return (
     <Box className="flex-1">
       <StatusBar style="auto" />
       
       {/* Main Content with Gradient */}
-      <LinearGradient
-        colors={gradientColors}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{ flex: 1, width: '100%' }}
-      >
+      <GradientBackground>
         <VStack className="flex-1 px-6">
           
           {/* Spacer for top */}
@@ -127,31 +103,31 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           <VStack className="items-center mb-8">
             
             {/* Welcome Text */}
-            <Text className="text-3xl text-typography-0 text-center mb-2 font-montserrat-bold">
+            <Text className="text-3xl text-white text-center mb-2 font-montserrat-bold">
               Welcome Back
             </Text>
-            <Text className="text-lg text-typography-0 text-center opacity-90 font-montserrat-medium">
+            <Text className="text-lg text-white text-center opacity-90 font-montserrat-medium">
               Sign in to continue your journey
             </Text>
           </VStack>
 
-          {/* Login Form Card */}
-          <Box className="bg-primary-0 rounded-3xl p-6 mx-2 shadow-soft-3">
+          {/* Login Form Card - with height manipulation */}
+          <Box className="bg-white rounded-3xl p-6 mx-2 shadow-lg h-148"> {/* Fixed height */}
             <VStack className="space-y-6">
               
               {/* Phone Number Input */}
               <FormControl isInvalid={!!errors.phone} isRequired>
-                <FormControlLabel>
-                  <FormControlLabelText className="text-typography-900 font-semibold text-base">
+                <Label>
+                  <Text className="text-gray-900 font-montserrat-semibold text-base">
                     Phone Number
-                  </FormControlLabelText>
-                </FormControlLabel>
-                <Box className="relative">
-                  <Input className="border-2 border-outline-200 focus:border-primary-500 rounded-xl bg-background-0 h-14">
-                    <Box className="pl-4 pr-2 justify-center">
+                  </Text>
+                </Label>
+                <View className="relative">
+                  <View className="flex-row border-2 border-gray-200 focus:border-primary-500 rounded-xl bg-white h-14 items-center">
+                    <View className="pl-4 pr-2 justify-center">
                       <Phone size={20} color="#6b7280" />
-                    </Box>
-                    <InputField
+                    </View>
+                    <Input
                       placeholder="Enter your phone number"
                       value={phoneNumber}
                       onChangeText={(text) => {
@@ -161,32 +137,30 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                       keyboardType="phone-pad"
                       autoCapitalize="none"
                       autoCorrect={false}
-                      className="flex-1 text-typography-900 text-base"
+                      className="flex-1 text-gray-900 text-base border-0 bg-transparent"
                     />
-                  </Input>
-                </Box>
+                  </View>
+                </View>
                 {errors.phone && (
-                  <FormControlError>
-                    <FormControlErrorText className="text-error-600">
-                      {errors.phone}
-                    </FormControlErrorText>
-                  </FormControlError>
+                  <FormErrorText className="text-red-600">
+                    {errors.phone}
+                  </FormErrorText>
                 )}
               </FormControl>
 
               {/* Password Input */}
               <FormControl isInvalid={!!errors.password}>
-                <FormControlLabel>
-                  <FormControlLabelText className="text-typography-900 font-semibold text-base">
+                <Label>
+                  <Text className="text-gray-900 font-montserrat-semibold text-base">
                     Password
-                  </FormControlLabelText>
-                </FormControlLabel>
-                <Box className="relative">
-                  <Input className="border-2 border-outline-200 focus:border-primary-500 rounded-xl bg-background-0 h-14">
-                    <Box className="pl-4 pr-2 justify-center">
+                  </Text>
+                </Label>
+                <View className="relative">
+                  <View className="flex-row border-2 border-gray-200 focus:border-primary-500 rounded-xl bg-white h-14 items-center">
+                    <View className="pl-4 pr-2 justify-center">
                       <Lock size={20} color="#6b7280" />
-                    </Box>
-                    <InputField
+                    </View>
+                    <Input
                       placeholder="Enter your password (optional)"
                       value={password}
                       onChangeText={(text) => {
@@ -196,7 +170,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                       secureTextEntry={!showPassword}
                       autoCapitalize="none"
                       autoCorrect={false}
-                      className="flex-1 text-typography-900 text-base"
+                      className="flex-1 text-gray-900 text-base border-0 bg-transparent"
                     />
                     <Pressable
                       onPress={() => setShowPassword(!showPassword)}
@@ -208,19 +182,15 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                         <Eye size={20} color="#6b7280" />
                       )}
                     </Pressable>
-                  </Input>
-                </Box>
-                <FormControlHelper>
-                  <FormControlHelperText className="text-typography-500 text-sm">
-                    Leave empty if you don't have a password
-                  </FormControlHelperText>
-                </FormControlHelper>
+                  </View>
+                </View>
+                <FormHelperText className="text-gray-500 text-sm">
+                  Leave empty if you don't have a password
+                </FormHelperText>
                 {errors.password && (
-                  <FormControlError>
-                    <FormControlErrorText className="text-error-600">
-                      {errors.password}
-                    </FormControlErrorText>
-                  </FormControlError>
+                  <FormErrorText className="text-red-600">
+                    {errors.password}
+                  </FormErrorText>
                 )}
               </FormControl>
 
@@ -228,21 +198,19 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               <Button
                 onPress={handleLogin}
                 disabled={loading || !phoneNumber.trim()}
-                className="bg-primary-500 py-4 rounded-xl h-14 shadow-soft-1"
-                action="primary"
-                size="lg"
+                className="bg-primary-500 py-4 rounded-xl h-14 shadow-lg flex-row items-center justify-center"
               >
-                {loading && <Spinner className="text-white mr-2" size="small" />}
-                <ButtonText className="text-white font-bold text-lg">
+                {loading && <Spinner spinnerSize="small" color="white" className="mr-2" />}
+                <Text className="text-white font-montserrat-bold text-lg">
                   {loading ? 'Signing In...' : 'Sign In'}
-                </ButtonText>
+                </Text>
               </Button>
 
               {/* Divider */}
               <HStack className="items-center">
-                <Box className="flex-1 h-px bg-outline-200" />
-                <Text className="mx-4 text-typography-500 font-medium">or continue with</Text>
-                <Box className="flex-1 h-px bg-outline-200" />
+                <Box className="flex-1 h-px bg-gray-200" />
+                <Text className="mx-4 text-gray-500 font-montserrat-medium">or continue with</Text>
+                <Box className="flex-1 h-px bg-gray-200" />
               </HStack>
 
               {/* Google Sign In Button */}
@@ -250,17 +218,16 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 onPress={handleGoogleLogin}
                 disabled={googleLoading}
                 variant="outline"
-                className="border-2 border-outline-200 py-4 rounded-xl h-14 bg-background-0"
-                size="lg"
+                className="border-2 border-gray-200 py-4 rounded-xl h-14 bg-white flex-row items-center justify-center"
               >
                 {googleLoading ? (
-                  <Spinner className="text-primary-500 mr-2" size="small" />
+                  <Spinner spinnerSize="small" color="#f97316" className="mr-2" />
                 ) : (
                   <Text className="text-2xl mr-3">🔍</Text>
                 )}
-                <ButtonText className="text-typography-900 font-semibold text-lg">
+                <Text className="text-gray-900 font-montserrat-semibold text-lg">
                   {googleLoading ? 'Connecting...' : 'Google'}
-                </ButtonText>
+                </Text>
               </Button>
             </VStack>
           </Box>
@@ -268,9 +235,9 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           {/* Sign Up Link */}
           <VStack className="items-center mt-6 mb-4">
             <HStack className="items-center">
-              <Text className="text-typography-0 font-medium">Don't have an account? </Text>
+              <Text className="text-white font-montserrat-medium">Don't have an account? </Text>
               <Pressable>
-                <Text className="text-primary-200 font-bold underline">Sign Up</Text>
+                <Text className="text-orange-200 font-montserrat-bold underline">Sign Up</Text>
               </Pressable>
             </HStack>
           </VStack>
@@ -279,7 +246,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           <Box className="flex-1" />
           
         </VStack>
-      </LinearGradient>
+      </GradientBackground>
     </Box>
   );
 }

@@ -10,11 +10,10 @@ import {
   Montserrat_800ExtraBold,
   Montserrat_900Black,
 } from '@expo-google-fonts/montserrat';
-import { GluestackUIProvider } from './app/ui/gluestack-ui-provider';
 import { AuthProvider } from './app/context/AuthContext';
 import AppNavigator from './app/navigation/AppNavigator';
 import { Spinner } from './app/ui/spinner';
-import { Box } from './app/ui/box';
+import { Box } from './app/ui/layout';
 import './global.css';
 
 export default function App(): React.JSX.Element {
@@ -29,23 +28,19 @@ export default function App(): React.JSX.Element {
 
   if (!fontsLoaded) {
     return (
-      <GluestackUIProvider mode="system">
-        <Box className="flex-1 bg-background-light dark:bg-background-dark justify-center items-center">
-          <Spinner className="text-primary-500" size="large" />
-        </Box>
-      </GluestackUIProvider>
+      <Box className="flex-1 bg-white dark:bg-gray-900 justify-center items-center">
+        <Spinner className="text-primary-500" spinnerSize="large" />
+      </Box>
     );
   }
 
   return (
-    <GluestackUIProvider mode="system">
-      <AuthProvider>
-        <View style={styles.container}>
-          <AppNavigator />
-          <StatusBar style="auto" />
-        </View>
-      </AuthProvider>
-    </GluestackUIProvider>
+    <AuthProvider>
+      <View style={styles.container}>
+        <AppNavigator />
+        <StatusBar style="auto" />
+      </View>
+    </AuthProvider>
   );
 }
 

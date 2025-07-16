@@ -1,8 +1,6 @@
-import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin';
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: "media",
+  darkMode: "class",
   content: [
     "App.{tsx,jsx,ts,js}",
     "index.{tsx,jsx,ts,js}",
@@ -10,6 +8,7 @@ module.exports = {
     "components/**/*.{tsx,jsx,ts,js}",
   ],
   presets: [require('nativewind/preset')],
+  plugins: [require('tailwindcss-animate')],
   safelist: [
     {
       pattern:
@@ -19,7 +18,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
         primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
           0: '#fff7ed',
           50: '#ffedd5',
           100: '#fed7aa',
@@ -34,32 +40,30 @@ module.exports = {
           950: '#431407',
         },
         secondary: {
-          0: '#f8fafc',
-          50: '#f1f5f9',
-          100: '#e2e8f0',
-          200: '#cbd5e1',
-          300: '#94a3b8',
-          400: '#64748b',
-          500: '#475569',
-          600: '#334155',
-          700: '#1e293b',
-          800: '#0f172a',
-          900: '#020617',
-          950: '#010307',
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
         },
-        tertiary: {
-          50: '#fef3c7',
-          100: '#fde68a',
-          200: '#fcd34d',
-          300: '#fbbf24',
-          400: '#f59e0b',
-          500: '#d97706',
-          600: '#b45309',
-          700: '#92400e',
-          800: '#78350f',
-          900: '#451a03',
-          950: '#292524',
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
         },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+        // Keep your existing color scheme for backward compatibility
         error: {
           0: '#fef2f2',
           50: '#fee2e2',
@@ -102,20 +106,6 @@ module.exports = {
           900: '#451a03',
           950: '#1c0a00',
         },
-        info: {
-          0: '#f0f9ff',
-          50: '#e0f2fe',
-          100: '#bae6fd',
-          200: '#7dd3fc',
-          300: '#38bdf8',
-          400: '#0ea5e9',
-          500: '#0284c7',
-          600: '#0369a1',
-          700: '#0c4a6e',
-          800: '#075985',
-          900: '#0c4a6e',
-          950: '#082f49',
-        },
         typography: {
           0: '#ffffff',
           50: '#f8fafc',
@@ -129,49 +119,9 @@ module.exports = {
           800: '#1e293b',
           900: '#0f172a',
           950: '#020617',
-          white: '#FFFFFF',
-          gray: '#64748b',
-          black: '#0f172a',
         },
         outline: {
-          0: '#f8fafc',
-          50: '#f1f5f9',
-          100: '#e2e8f0',
           200: '#cbd5e1',
-          300: '#94a3b8',
-          400: '#64748b',
-          500: '#475569',
-          600: '#334155',
-          700: '#1e293b',
-          800: '#0f172a',
-          900: '#020617',
-          950: '#010307',
-        },
-        background: {
-          0: '#ffffff',
-          50: '#fff7ed',
-          100: '#ffedd5',
-          200: '#fef3c7',
-          300: '#f8fafc',
-          400: '#f1f5f9',
-          500: '#e2e8f0',
-          600: '#cbd5e1',
-          700: '#94a3b8',
-          800: '#64748b',
-          900: '#475569',
-          950: '#334155',
-          error: '#fef2f2',
-          warning: '#fffbeb',
-          muted: '#f8fafc',
-          success: '#f0fdf4',
-          info: '#f0f9ff',
-          light: '#ffffff',
-          dark: '#0f172a',
-        },
-        indicator: {
-          primary: '#f97316',
-          info: '#0ea5e9',
-          error: '#ef4444',
         },
       },
       fontFamily: {
@@ -218,5 +168,4 @@ module.exports = {
       },
     },
   },
-  plugins: [gluestackPlugin],
 };

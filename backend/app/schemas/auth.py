@@ -3,11 +3,36 @@ Authentication schemas for request/response models.
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Union
+from enum import Enum
+
+
+class LoginMethod(str, Enum):
+    """Supported login methods."""
+    PHONE_OTP = "phone_otp"
+    EMAIL_PASSWORD = "email_password"
+    GOOGLE_OAUTH = "google_oauth"
+
+
+class PhoneOTPRequest(BaseModel):
+    """Request OTP for phone number."""
+    phone_number: str = Field(..., description="User's phone number")
+
+
+class PhoneOTPVerify(BaseModel):
+    """Verify OTP for phone number login."""
+    phone_number: str = Field(..., description="User's phone number")
+    otp_code: str = Field(..., description="6-digit OTP code")
+
+
+class EmailPasswordLogin(BaseModel):
+    """Email and password login request."""
+    email: str = Field(..., description="User's email address")
+    password: str = Field(..., description="User's password")
 
 
 class UserLogin(BaseModel):
-    """User login request."""
+    """User login request - legacy support."""
     phone_number: str = Field(..., description="User's phone number")
     password: Optional[str] = Field(None, description="User's password (optional for OTP login)")
 
@@ -41,3 +66,9 @@ class GoogleUserInfo(BaseModel):
     name: str
     picture: Optional[str] = None
     verified_email: bool = False
+
+
+class OTPResponse(BaseModel):
+    """OTP request response."""
+    message: str
+    expires_in: int = 600  # 10 minutes

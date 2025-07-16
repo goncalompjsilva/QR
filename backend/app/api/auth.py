@@ -14,9 +14,14 @@ from app.schemas.auth import (
     UserLogin, 
     UserRegister, 
     TokenResponse, 
-    GoogleAuthRequest
+    GoogleAuthRequest,
+    PhoneOTPRequest,
+    PhoneOTPVerify,
+    EmailPasswordLogin,
+    OTPResponse
 )
 from app.services.google_oauth import google_oauth
+from app.services.otp_service import OTPService
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -76,12 +81,159 @@ async def register_user(
     )
 
 
+# === Phone Number + OTP Authentication ===
+@router.post("/phone/request-otp", response_model=OTPResponse)
+async def request_phone_otp(
+    otp_request: PhoneOTPRequest,
+    db: Session = Depends(get_db)
+):
+    """Request OTP for phone number authentication."""
+    try:
+        # Generate and send OTP
+        otp_code = OTPService.create_otp(db, otp_request.phone_number)
+        
+        # Send SMS (in production, integrate with SMS service)
+        success = OTPService.send_otp_sms(otp_request.phone_number, otp_code)
+        
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to send OTP SMS"
+            )
+        
+        return OTPResponse(
+            message="OTP sent successfully",
+            expires_in=600  # 10 minutes
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to send OTP: {str(e)}"
+        )
+
+
+@router.post("/phone/verify-otp", response_model=TokenResponse)
+async def verify_phone_otp(
+    otp_verify: PhoneOTPVerify,
+    db: Session = Depends(get_db)
+):
+    """Verify OTP and login user."""
+    # Verify OTP
+    is_valid = OTPService.verify_otp(db, otp_verify.phone_number, otp_verify.otp_code)
+    
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired OTP code"
+        )
+    
+    # Find or create user
+    user = db.query(User).filter(User.phone_number == otp_verify.phone_number).first()
+    
+    if not user:
+        # Create new user if doesn't exist
+        user = User(
+            phone_number=otp_verify.phone_number,
+            phone_verified=True,
+            role="customer"
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    else:
+        # Mark phone as verified
+        user.phone_verified = True
+        db.commit()
+    
+    # Check if user is active
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Account is deactivated"
+        )
+    
+    # Create access token
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token = create_access_token(
+        data={"sub": str(user.id), "role": user.role},
+        expires_delta=access_token_expires
+    )
+    
+    return TokenResponse(
+        access_token=access_token,
+        token_type="bearer",
+        expires_in=settings.access_token_expire_minutes * 60,
+        user_id=user.id,
+        role=user.role
+    )
+
+
+# === Email + Password Authentication ===
+@router.post("/email/login", response_model=TokenResponse)
+async def login_with_email(
+    login_data: EmailPasswordLogin,
+    db: Session = Depends(get_db)
+):
+    """Login user with email and password."""
+    # Find user by email
+    user = db.query(User).filter(User.email == login_data.email).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+    
+    # Verify password
+    if not user.password_hash:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="This account was created with OAuth. Please use Google login or phone number authentication."
+        )
+    
+    if not verify_password(login_data.password, user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+    
+    # Check if user is active
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Account is deactivated"
+        )
+    
+    # Create access token
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token = create_access_token(
+        data={"sub": str(user.id), "role": user.role},
+        expires_delta=access_token_expires
+    )
+    
+    return TokenResponse(
+        access_token=access_token,
+        token_type="bearer",
+        expires_in=settings.access_token_expire_minutes * 60,
+        user_id=user.id,
+        role=user.role
+    )
+
+
 @router.post("/login", response_model=TokenResponse)
 async def login_user(
     user_data: UserLogin,
     db: Session = Depends(get_db)
 ):
-    """Login user with phone number and password."""
+    """
+    Legacy login endpoint with phone number and password.
+    
+    DEPRECATED: Use the new authentication methods instead:
+    - Phone + OTP: POST /auth/phone/request-otp → POST /auth/phone/verify-otp
+    - Email + Password: POST /auth/email/login
+    - Google OAuth: GET /auth/google/url → POST /auth/google/callback
+    """
     # Find user by phone number
     user = db.query(User).filter(User.phone_number == user_data.phone_number).first()
     

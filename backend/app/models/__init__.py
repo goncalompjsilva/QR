@@ -8,6 +8,7 @@ from .loyalty_program import LoyaltyProgram
 from .user_loyalty_points import UserLoyaltyPoints
 from .qr_code import QRCode
 from .point_activity import PointActivity
+from .otp import OTP
 
 __all__ = [
     "BaseModel",
@@ -17,5 +18,6 @@ __all__ = [
     "LoyaltyProgram",
     "UserLoyaltyPoints", 
     "QRCode",
-    "PointActivity"
+    "PointActivity",
+    "OTP"
 ]
